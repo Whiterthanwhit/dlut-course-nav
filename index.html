@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>大工选课与培养方案导航</title>
+  <meta name="description" content="输入专业，自动定位大连理工大学三校区培养方案，提炼学分结构、学期安排与选课提醒。">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="hero">
+    <div class="wrap hero-inner">
+      <div class="hero-copy">
+        <p class="kicker">DALIAN UNIVERSITY OF TECHNOLOGY · 三校区</p>
+        <h1>选课与培养方案导航</h1>
+        <p class="sub">输入专业，自动定位培养方案，提炼学分结构、学期安排与选课提醒。</p>
+      </div>
+      <div class="hero-side">
+        <span class="pill" id="dataPill">示例数据</span>
+        <span class="pill" id="apiPill">检索：本地</span>
+        <button class="ghost" id="openSettings" type="button">⚙ 模型接入</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="panel search" role="search" aria-label="专业检索">
+      <div class="field grow">
+        <label for="q">专业 / 口语说法</label>
+        <input id="q" type="search" autocomplete="off" list="majorList"
+               placeholder="例如：计科、软工、盘锦化工、集成电路">
+        <datalist id="majorList"></datalist>
+      </div>
+      <div class="field">
+        <label for="campus">校区</label>
+        <select id="campus">
+          <option value="">全部校区</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="grade">年级</label>
+        <select id="grade">
+          <option value="">不限</option>
+        </select>
+      </div>
+      <button class="primary" id="go" type="button">查询</button>
+    </section>
+
+    <div class="chips" id="chips" aria-label="常见说法"></div>
+
+    <div id="notice" class="notice" role="status" aria-live="polite" hidden></div>
+
+    <section id="result" class="result" aria-live="polite">
+      <div class="empty">
+        <p class="empty-title">从一个专业开始</p>
+        <p class="empty-sub">支持口语说法，例如「盘锦化工」「软工」「微电子」；未指定年级时默认展示最近可用的方案。</p>
+      </div>
+    </section>
+
+    <footer class="foot">
+      <p id="disclaimer">本工具仅作信息导航，学分、课程与选课规则以教务处及各学院当年发布的正式文件为准。</p>
+      <p class="foot-meta" id="footMeta"></p>
+    </footer>
+  </main>
+
+  <dialog id="settings" class="settings">
+    <form method="dialog" id="settingsForm">
+      <h2>GLM 模型接入</h2>
+      <p class="hint">留空则使用本地模板摘要（不调用模型，数字完全来自数据表）。正式部署请把 Key 放在后端，页面只填接口地址。</p>
+
+      <label for="endpoint">接口地址</label>
+      <input id="endpoint" type="text" spellcheck="false"
+             placeholder="https://open.bigmodel.cn/api/paas/v4/chat/completions">
+
+      <label for="model">模型名</label>
+      <input id="model" type="text" value="glm-4-flash" spellcheck="false">
+
+      <label for="apiKey">API Key（仅本地演示）</label>
+      <input id="apiKey" type="password" spellcheck="false" placeholder="留空则由后端注入">
+
+      <p class="hint" id="proxyHint">若用本项目自带的 <code>server/app.py</code>，接口地址填 <code>/api/glm</code>，Key 放环境变量 <code>GLM_API_KEY</code>。</p>
+
+      <div class="row">
+        <button class="ghost" value="cancel" type="submit">取消</button>
+        <button class="primary" value="save" type="submit">保存</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
