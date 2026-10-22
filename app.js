@@ -52,19 +52,25 @@
       .replace(/[\s\u3000（）()【】\[\]·、，,。.／/\-—_~“”"'':：;；]/g, '');
   }
 
+  // v2：旧版本把接口地址存在 dlut.glm，可能残留失效的 Worker/根地址，直接弃用
+  var GLM_STORE = 'dlut.glm.v2';
+
   function loadGlm() {
     var saved = {};
-    try { saved = JSON.parse(localStorage.getItem('dlut.glm') || '{}') || {}; }
+    try { saved = JSON.parse(localStorage.getItem(GLM_STORE) || '{}') || {}; }
     catch (e) { saved = {}; }
+    var ep = String(saved.endpoint || 'https://submissions-lucia-chips-volumes.trycloudflare.com/api/glm').trim();
+    ep = ep.replace(/\/+$/, '');
+    if (!/\/api\/glm$/.test(ep)) ep += '/api/glm';   // 允许只填域名/根地址
     return {
-      endpoint: saved.endpoint || 'https://submissions-lucia-chips-volumes.trycloudflare.com/api/glm',
+      endpoint: ep,
       model: saved.model || 'glm-4-flash',
       apiKey: saved.apiKey || ''
     };
   }
 
   function saveGlm(v) {
-    try { localStorage.setItem('dlut.glm', JSON.stringify(v)); } catch (e) { /* 隐私模式忽略 */ }
+    try { localStorage.setItem(GLM_STORE, JSON.stringify(v)); } catch (e) { /* 隐私模式忽略 */ }
   }
 
   function programFor(major) {
