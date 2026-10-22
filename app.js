@@ -60,6 +60,7 @@
     try { saved = JSON.parse(localStorage.getItem(GLM_STORE) || '{}') || {}; }
     catch (e) { saved = {}; }
     var ep = String(saved.endpoint || 'https://submissions-lucia-chips-volumes.trycloudflare.com/api/glm').trim();
+    if (!/^https?:\/\//i.test(ep)) ep = 'https://submissions-lucia-chips-volumes.trycloudflare.com/api/glm';
     ep = ep.replace(/\/+$/, '');
     if (!/\/api\/glm$/.test(ep)) ep += '/api/glm';   // 允许只填域名/根地址
     return {
