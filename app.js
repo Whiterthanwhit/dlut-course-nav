@@ -53,8 +53,14 @@
   }
 
   function loadGlm() {
-    try { return JSON.parse(localStorage.getItem('dlut.glm') || '{}') || {}; }
-    catch (e) { return {}; }
+    var saved = {};
+    try { saved = JSON.parse(localStorage.getItem('dlut.glm') || '{}') || {}; }
+    catch (e) { saved = {}; }
+    return {
+      endpoint: saved.endpoint || 'https://dlut-glm.2865819467.workers.dev/api/glm',
+      model: saved.model || 'glm-4-flash',
+      apiKey: saved.apiKey || ''
+    };
   }
 
   function saveGlm(v) {
