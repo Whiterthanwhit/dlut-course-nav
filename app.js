@@ -98,13 +98,20 @@
     go.textContent = busy ? '查询中…' : '查询';
   }
 
+  // 检索服务地址：默认同源；分离部署时在 index.html 的 <meta name="dlut-api"> 填 API 域名
+  var API_BASE = (function () {
+    var meta = document.querySelector('meta[name="dlut-api"]');
+    var base = (meta && meta.getAttribute('content')) || window.DLUT_API_BASE || '';
+    return String(base).replace(/\/+$/, '');
+  })();
+
   function detectApi() {
     if (location.protocol === 'file:') { setApiMode('local', '本地'); return Promise.resolve(); }
     // 健康探测加 1.5s 超时：连接挂起时不能让 ?q= 直达查询无限期停在空状态
     var ctrl = typeof AbortController !== 'undefined' ? new AbortController() : null;
     var timer = ctrl ? setTimeout(function () { ctrl.abort(); }, 1500) : null;
     function settle() { if (timer) clearTimeout(timer); }
-    return fetch('/api/health', { cache: 'no-store', signal: ctrl ? ctrl.signal : undefined })
+    return fetch(API_BASE + '/api/health', { cache: 'no-store', signal: ctrl ? ctrl.signal : undefined })
       .then(function (r) { return r.ok ? r.json() : null; })
       .then(function (h) {
         settle();
@@ -130,7 +137,7 @@
         reject(new Error('超时'));
       }, 8000);  // 服务端 /api/ask 含 GLM 润色时典型耗时 1-5s，2.5s 会必然超时
 
-      fetch('/api/ask', {
+      fetch(API_BASE + '/api/ask', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
