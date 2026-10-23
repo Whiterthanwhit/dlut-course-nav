@@ -56,11 +56,18 @@
   var GLM_STORE = 'dlut.glm.v2';
 
   function loadGlm() {
+    var DEFAULT_EP = 'https://removable-preference-jungle-bone.trycloudflare.com/api/glm';
     var saved = {};
     try { saved = JSON.parse(localStorage.getItem(GLM_STORE) || '{}') || {}; }
     catch (e) { saved = {}; }
-    var ep = String(saved.endpoint || 'https://submissions-lucia-chips-volumes.trycloudflare.com/api/glm').trim();
-    if (!/^https?:\/\//i.test(ep)) ep = 'https://submissions-lucia-chips-volumes.trycloudflare.com/api/glm';
+    var ep = String(saved.endpoint || DEFAULT_EP).trim();
+    if (!/^https?:\/\//i.test(ep)) ep = DEFAULT_EP;
+    // 隧道每次重启域名都会变：保存的 trycloudflare 端点与当前默认不一致时自动改用默认
+    try {
+      var host = new URL(ep).host;
+      var dhost = new URL(DEFAULT_EP).host;
+      if (host !== dhost && /trycloudflare\.com$/.test(host)) ep = DEFAULT_EP;
+    } catch (e) { ep = DEFAULT_EP; }
     ep = ep.replace(/\/+$/, '');
     if (!/\/api\/glm$/.test(ep)) ep += '/api/glm';   // 允许只填域名/根地址
     return {
