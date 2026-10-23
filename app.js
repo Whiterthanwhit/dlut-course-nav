@@ -56,7 +56,7 @@
   var GLM_STORE = 'dlut.glm.v2';
 
   function loadGlm() {
-    var DEFAULT_EP = 'https://removable-preference-jungle-bone.trycloudflare.com/api/glm';
+    var DEFAULT_EP = 'https://dlut-glm.whiterthanwhite.deno.net/api/glm';
     var saved = {};
     try { saved = JSON.parse(localStorage.getItem(GLM_STORE) || '{}') || {}; }
     catch (e) { saved = {}; }
